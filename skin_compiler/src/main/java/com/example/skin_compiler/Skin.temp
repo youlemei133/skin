@@ -1,0 +1,138 @@
+public class Skin {
+    /**
+     * 初始化操作
+     */
+    public static void init() {
+        registerHandlers();
+        registerActivities();
+    }
+
+    /**
+     * 设置"textColor"属性
+     *
+     * @param view
+     * @param resId
+     */
+    public static void setTextColor(@NonNull View view, int resId) {
+        String attributeName = "textColor";
+        List<SkinAttrHandler> handlers = HandlerMap.get(attributeName);
+        for (SkinAttrHandler handler : handlers) {
+            if (handler.isSupport(view, attributeName, resId))  {
+                SkinAttrHandlerUtils.tryAddSkinView(view, attributeName, resId);
+                handler.handle(view, attributeName, resId);
+                break;
+            }
+        }
+    }
+
+    /**
+     * 设置"background"属性
+     *
+     * @param view
+     * @param resId
+     */
+    public static void setBackgroundColor(@NonNull View view, int resId) {
+        String attributeName = "background";
+        List<SkinAttrHandler> handlers = HandlerMap.get(attributeName);
+        for (SkinAttrHandler handler : handlers) {
+            if (handler.isSupport(view, attributeName, resId))  {
+                SkinAttrHandlerUtils.tryAddSkinView(view, attributeName, resId);
+                handler.handle(view, attributeName, resId);
+                break;
+            }
+        }
+    }
+
+    /**
+     * 注册处理皮肤属性类
+     */
+    private static void registerHandlers() {
+        HandlerMap.register("textColor", new TextColorHandler());
+        HandlerMap.register("background", new BackgroundColorHandler());
+        HandlerMap.register("textColor", new com.example.core.attr.handler.TextColorHandler());
+    }
+
+    /**
+     * 注册支持皮肤功能的Activity类
+     * 必须在调用installF
+     */
+    private static void registerActivities() {
+        SkinActivities.register("com.example.skin.MainActivity");
+        SkinActivities.register("com.example.skin.TestActivity");
+    }
+
+    /**
+     * 获取皮肤包存储目录
+     *
+     * @param context 上下文
+     * @return 皮肤包存储目录
+     */
+    public static File getSkinDir(Context context) {
+        File cacheDir = context.getApplicationContext().getCacheDir();
+        File skin = new File(cacheDir, "skin");
+        if (!skin.exists()) {
+            skin.mkdir();
+        }
+        return skin;
+    }
+
+    /**
+     * 存储当前所使用的皮肤包名
+     *
+     * @param context 上下文
+     * @param skinName 当前使用的皮肤包名
+     */
+    public static void putCurSkin(Context context, String skinName) {
+        Editor edit = context.getSharedPreferences("skin", Context.MODE_PRIVATE).edit();
+        edit.putString("CUR_SKIN_NAME", skinName);
+        edit.apply();
+    }
+
+    /**
+     * 获取当前使用的皮肤包名
+     *
+     * @param context 上下文
+     * @return 当前使用的皮肤包名
+     */
+    public static String getCurSkin(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("skin", Context.MODE_PRIVATE);
+        return sp.getString("CUR_SKIN_NAME", "");
+    }
+
+    /**
+     * 应用当前皮肤（切换皮肤的时候调用）
+     *
+     * @param context 上下文
+     */
+    public static void applySkin(Context context) {
+        String skinName = getCurSkin(context);
+        String skinPath = getSkinDir(context) + "/" + skinName;
+        SkinResourcesManager.getInstance().updateResources(context, skinName, skinPath);
+        SkinViewHandler.getInstance().apply();
+    }
+
+    /**
+     * 设置布局加载器的Factory2
+     * 必须在Activity调用super.onCreate()前调用
+     *
+     * @param context 上下文
+     */
+    public static void installViewFactory(Context context) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        if (layoutInflater.getFactory() == null) {
+            LayoutInflaterCompat.setFactory2(layoutInflater, new SkinFactory());
+        }
+    }
+
+    /**
+     * 设置指定Activity是否使用皮肤功能
+     * 该Activity必须使用@SupportSkin标注
+     * 必须在Activity调用super.onCreate()前调用
+     *
+     * @param activity    指定Activity
+     * @param isApplySkin 是否使用皮肤功能
+     */
+    public static void setApplySkin(AppCompatActivity activity, boolean isApplySkin) {
+        SkinActivities.setApplySkin(activity.getClass().getCanonicalName(), isApplySkin);
+    }
+}

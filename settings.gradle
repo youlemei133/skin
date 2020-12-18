@@ -1,0 +1,5 @@
+include ':skin_compiler'
+include ':skin_annotation'
+include ':skin_core'
+include ':app'
+rootProject.name = "skin"

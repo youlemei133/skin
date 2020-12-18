@@ -1,0 +1,50 @@
+使用
+
+1.在App的build.gradle文件中
+
+a.配置注解参数
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        packageName: 生成Skin类所在包名
+                ]
+            }
+        }
+    }
+}
+
+b.添加依赖
+implementation project(':skin_core')
+implementation project(':skin_annotation')
+annotationProcessor project(':skin_compiler')
+
+2.自定义皮肤属性处理
+继承BaseSkinAttrHandler类，使用注解Attribute标识
+实现isSupport()和handle()方法
+
+3.重新编译生成Skin类：Build->Rebuild Project
+自动生成Skin类，该类路径：app/build/generated/ap_generated_sources/debug/out/包名/Skin.java
+其中包名为build.gradle中配置的packageName
+
+4.在自定义Application中的onCreate方法中注册Handlers和Activity
+Skin.init();
+
+5.创建一个Activity的基类BaseActivity，在BaseActivity的onCreate方法中
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        //这里一定要在super之前调用，否则我们的Factory设置不进去
+        Skin.installViewFactory(this);
+        super.onCreate(savedInstanceState);
+    }
+
+6.在需要设置皮肤属性的地方调研Skin.setXxx()方法
+Skin.setBackgroundColor(view4, R.color.teal_200);
+Skin.setTextColor(textView,R.color.teal_200);
+
+7.下载皮肤包，皮肤包路径可通过Skin类获取
+获取皮肤包目录，下载的皮肤包需存放到该目录下：Skin.getSkinDir()
+设置当前使用皮肤包：Skin.putCurSkin()
+应用/更新皮肤包：Skin.applySkin()
+

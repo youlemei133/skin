@@ -1,0 +1,4 @@
+public final class LibraryHandlers {
+    private final String handlers = "background,setBackgroundColor,com.example.core.attr.handler.BackgroundHandler\n
+    background,setBackgroundColor,com.example.core.attr.handler.BackgroundHandler";
+}
