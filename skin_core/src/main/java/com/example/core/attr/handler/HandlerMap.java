@@ -14,7 +14,9 @@ import java.util.Map;
  * 处理一个属性可以有多个处理类来实现
  */
 public class HandlerMap {
-    //用于存放处理属性类
+    /**
+     * 用于存放处理属性类
+     */
     private static final Map<String, List<SkinAttrHandler>> sHandlerMap = new HashMap<>();
 
     /**

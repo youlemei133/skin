@@ -8,9 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.example.core.attr.SkinAttrItem;
 import com.example.core.attr.SkinView;
-import com.example.core.attr.SkinViewHandler;
-import com.example.core.attr.handler.HandlerMap;
-import com.example.core.attr.handler.SkinAttrHandler;
+import com.example.core.attr.SkinViews;
 
 import java.util.List;
 
@@ -49,10 +47,10 @@ public class SkinAttrHandlerUtils {
      */
     public static void tryAddSkinView(@NonNull View view, @NonNull String attributeName, int resId) {
         //从容器中获取View对应的SkinView
-        SkinView skinView = SkinViewHandler.getInstance().get(view);
+        SkinView skinView = SkinViews.getInstance().get(view);
         if (skinView == null) {
             //如果没有，就创建一个SkinView，然后添加到容器中
-            skinView = SkinViewHandler.getInstance().add(view);
+            skinView = SkinViews.getInstance().add(view);
         }
         //遍历SkinView的所有属性，寻找对应属性的SkinAttrItem对象
         List<SkinAttrItem> skinAttrItems = skinView.getSkinAttrItems();
@@ -65,7 +63,7 @@ public class SkinAttrHandlerUtils {
         }
         //如果不存在就创建一个SkinAttrItem，并添加到SKinView的属性集合中
         if (skinAttrItem == null) {
-            skinAttrItem = SkinViewHandler.getInstance().acquireSkinAttrItem(attributeName, resId);
+            skinAttrItem = SkinViews.getInstance().acquireSkinAttrItem(attributeName, resId);
             skinAttrItems.add(skinAttrItem);
         } else {
             //存在则更新资源Id

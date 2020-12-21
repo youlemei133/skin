@@ -255,8 +255,10 @@ public class SkinProcessor extends AbstractProcessor {
         ClassName context = ClassName.get(Constants.PKG_CONTENT, Constants.CLS_CONTEXT);
         ClassName skinResourcesManager = ClassName.get(Constants.PKG_RESOURCE,
                 Constants.CLS_SKIN_RESOURCES_MANAGER);
-        ClassName skinViewHandler = ClassName.get(Constants.PKG_ATTR,
-                Constants.CLS_SKIN_VIEW_HANDLER);
+        ClassName skinViews = ClassName.get(Constants.PKG_ATTR,
+                Constants.CLS_SKIN_VIEWS);
+        ClassName applySkinListeners = ClassName.get(Constants.PKG_LISTENER,
+                Constants.CLS_APPLY_SKIN_LISTENERS);
         MethodSpec.Builder builder = MethodSpec.methodBuilder("applySkin")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(TypeName.VOID)
@@ -265,7 +267,8 @@ public class SkinProcessor extends AbstractProcessor {
                 .addStatement("$T skinPath = getSkinDir(context) + \"/\" + skinName", String.class)
                 .addStatement("$T.getInstance().updateResources(context, skinName, skinPath)",
                         skinResourcesManager)
-                .addStatement("$T.getInstance().apply()", skinViewHandler);
+                .addStatement("$T.getInstance().apply()", skinViews)
+                .addStatement("$T.getInstance().apply(skinName)", applySkinListeners);
         JavaDoc.getInstance().write("应用当前皮肤（切换皮肤的时候调用）")
                 .writeEmpty()
                 .write("@param context 上下文")
@@ -375,6 +378,21 @@ public class SkinProcessor extends AbstractProcessor {
         return builder.build();
     }
 
+    private MethodSpec addApplySkinListenerMethod() {
+        ClassName applySkinListeners = ClassName.get(Constants.PKG_LISTENER, Constants.CLS_APPLY_SKIN_LISTENERS);
+        ClassName applySkinListener = ClassName.get(Constants.PKG_LISTENER, Constants.CLS_APPLY_SKIN_LISTENER);
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("addApplySkinListener")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addParameter(applySkinListener, "listener")
+                .returns(TypeName.VOID)
+                .addStatement("$T.getInstance().add(listener)", applySkinListeners);
+        JavaDoc.getInstance().write("添加皮肤切换监听器，实现皮肤切换时特殊处理")
+                .writeEmpty()
+                .write("@param listener 监听器")
+                .commit(builder);
+        return builder.build();
+    }
+
     /**
      * 创建Skin类
      */
@@ -392,7 +410,8 @@ public class SkinProcessor extends AbstractProcessor {
                 .addMethod(getCurSkinMethod())
                 .addMethod(applySkinMethod())
                 .addMethod(installViewFactoryMethod())
-                .addMethod(setApplySkinMethod());
+                .addMethod(setApplySkinMethod())
+                .addMethod(addApplySkinListenerMethod());
 
         createJavaFile(skinUtils);
     }

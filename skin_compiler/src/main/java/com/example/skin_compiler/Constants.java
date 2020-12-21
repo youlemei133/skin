@@ -16,6 +16,7 @@ class Constants {
     final static String PKG_CONTENT = "android.content";
     final static String PKG_RESOURCE = "com.example.core.resource";
     final static String PKG_ATTR = "com.example.core.attr";
+    final static String PKG_LISTENER = "com.example.core.listener";
 
     final static String CLS_VIEW = "View";
     final static String CLS_NONNULL = "NonNull";
@@ -25,7 +26,9 @@ class Constants {
     final static String CLS_CONTEXT = "Context";
     final static String CLS_SHARED_PREFERENCES = "SharedPreferences";
     final static String CLS_SKIN_RESOURCES_MANAGER = "SkinResourcesManager";
-    final static String CLS_SKIN_VIEW_HANDLER = "SkinViewHandler";
+    final static String CLS_SKIN_VIEWS = "SkinViews";
     final static String CLS_LAYOUT_INFLATER = "LayoutInflater";
+    final static String CLS_APPLY_SKIN_LISTENERS = "ApplySkinListeners";
+    final static String CLS_APPLY_SKIN_LISTENER = "ApplySkinListener";
 
 }

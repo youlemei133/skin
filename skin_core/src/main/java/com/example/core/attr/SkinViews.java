@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
  * on 2020/12/8 0008
  * 处理SkinView
  */
-public class SkinViewHandler {
+public class SkinViews {
     /**
      * 存放所有的SkinView
      */
@@ -26,7 +26,7 @@ public class SkinViewHandler {
     /**
      * 单例模式
      */
-    private static SkinViewHandler sInstance;
+    private static SkinViews sInstance;
     /**
      * WeakReferenceView回收队列
      */
@@ -42,7 +42,7 @@ public class SkinViewHandler {
      */
     private final Pools.SynchronizedPool<SkinAttrItem> mSkinAttrItemPools;
 
-    private SkinViewHandler() {
+    private SkinViews() {
         skinViews = new ArrayList<>();
         queue = new ReferenceQueue<>();
         mSkinViewPools = new Pools.SynchronizedPool<>(100);
@@ -90,9 +90,9 @@ public class SkinViewHandler {
     /**
      * 获取单例对象
      */
-    public static SkinViewHandler getInstance() {
+    public static SkinViews getInstance() {
         if (sInstance == null) {
-            sInstance = new SkinViewHandler();
+            sInstance = new SkinViews();
         }
         return sInstance;
     }
